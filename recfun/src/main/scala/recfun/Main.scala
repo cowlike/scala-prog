@@ -44,6 +44,26 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    0
+    def makeChange(money: Int, coins: List[Int], count: Int): Int = {
+      if (coins == Nil) {
+        count
+      }
+      else {
+        val remainder = money - coins.head
+        if (remainder < 0) {
+          println(remainder + " < 0, " + coins.tail + ", " + count)
+          makeChange(money, coins.tail, count)
+        }
+        else if (remainder == 0) {
+          println(remainder + " = 0, " + coins.tail + ", " + (count + 1))
+          makeChange(remainder, coins.tail, count + 1)
+        }
+        else {
+          println(remainder + " > 0, " + coins + ", " + count)
+          makeChange(remainder, coins, count)
+        }
+      }
+    }
+    makeChange(money, coins, 0)
   }
 }
