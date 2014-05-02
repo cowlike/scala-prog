@@ -1,5 +1,6 @@
 .cache
 .metadata
+.worksheet
 target
 lib_managed
 

@@ -17,7 +17,8 @@ object Main {
   def pascal(c: Int, r: Int): Int = {
     if (c == 0 || c == r) {
       1
-    } else {
+    } 
+    else {
       pascal(c - 1, r - 1) + pascal(c, r - 1)
     }
   }
@@ -27,15 +28,15 @@ object Main {
    */
   def balance(chars: List[Char]): Boolean = {
     def sumBalance(chars: List[Char], sum: Int): Boolean = {
-      sum >= 0 &&
-        (chars match {
-          case Nil => sum == 0
-          case x :: xs => x match {
-            case '(' => sumBalance(xs, sum + 1)
-            case ')' => sumBalance(xs, sum - 1)
-            case _ => sumBalance(xs, sum)
-          }
-        })
+      if (chars.isEmpty || sum < 0)
+        sum == 0
+      else {
+        chars.head match {
+          case '(' => sumBalance(chars.tail, sum + 1)
+          case ')' => sumBalance(chars.tail, sum - 1)
+          case _ => sumBalance(chars.tail, sum)
+        }
+      }
     }
     sumBalance(chars, 0)
   }
@@ -44,9 +45,9 @@ object Main {
    * Exercise 3
    */
   def countChange(money: Int, coins: List[Int]): Int = {
-    if (coins.isEmpty || money < 0) 
-      0 
-    else if (money == 0) 
+    if (coins.isEmpty || money < 0)
+      0
+    else if (money == 0)
       1
     else
       countChange(money - coins.head, coins) + countChange(money, coins.tail)
