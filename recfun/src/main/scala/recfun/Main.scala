@@ -1,6 +1,32 @@
 package recfun
 import common._
 
+/***
+def pascal(c, r) {
+    def val = 0
+    def prev = []
+    (0..r).each { row ->
+        def cur = []
+        for (col = 0; col <= row; col++) {
+            if (col == 0 || col == row) {
+                val = 1
+            }
+            else {
+                val = prev[col] + prev[col-1]
+            }
+            if (c == col && r == row) {
+                break
+            }
+            cur << val
+        }
+        prev = cur
+    }
+    val
+}
+
+pascal (18,35)
+***/
+
 object Main {
   def main(args: Array[String]) {
     println("Pascal's Triangle")
@@ -17,8 +43,7 @@ object Main {
   def pascal(c: Int, r: Int): Int = {
     if (c == 0 || c == r) {
       1
-    } 
-    else {
+    } else {
       pascal(c - 1, r - 1) + pascal(c, r - 1)
     }
   }
