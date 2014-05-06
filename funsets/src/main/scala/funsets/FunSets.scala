@@ -71,7 +71,11 @@ object FunSets {
   /**
    * Returns a set transformed by applying `f` to each element of `s`.
    */
-  def map(s: Set, f: Int => Int): Set = x => s(f(x))
+  def map(s: Set, f: Int => Int): Set = { x =>
+    val xs = for (i <- -bound to bound if x == f(i) && contains(s, i)) yield i
+    xs.length > 0
+  }
+    //y => y == f(x) && contains(s,x)
 
   /**
    * Displays the contents of a set
