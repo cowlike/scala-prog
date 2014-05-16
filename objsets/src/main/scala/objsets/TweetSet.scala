@@ -81,11 +81,18 @@ abstract class TweetSet {
    */
   //def descendingByRetweet: TweetList = ??? TODO: hmmm
   def descendingByRetweet: TweetList = {
-    def maxIter(acc: TweetList): TweetList = {
-      acc
+    def toList(in: TweetSet, acc: TweetList): TweetList = {
+      if (in.isEmpty) acc
+      else {
+        val max = in.mostRetweeted
+        toList(in.remove(max), new Cons(max, acc))
+      }
     }
-    maxIter(Nil)
+    toList(this, Nil)
   }
+
+  //TODO: this is a helper for the descending sorter so we don't have to throw
+  def isEmpty: Boolean
 
   /**
    * The following methods are already implemented
@@ -125,6 +132,8 @@ class Empty extends TweetSet {
   def mostRetweeted: Tweet = throw new java.util.NoSuchElementException("Empty")
   def maxRetweets(acc: Tweet): Tweet = acc
 
+  def isEmpty: Boolean = true
+
   /**
    * The following methods are already implemented
    */
@@ -152,9 +161,11 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
   def maxRetweets(acc: Tweet): Tweet = {
     def comp(x: Tweet, y: Tweet) = if (x.retweets > y.retweets) x else y
-    comp(acc, left maxRetweets((right maxRetweets(acc))))
+    comp(acc, left maxRetweets ((right maxRetweets (acc))))
   }
   def mostRetweeted = maxRetweets(elem)
+
+  def isEmpty: Boolean = false
 
   /**
    * The following methods are already implemented
@@ -208,14 +219,15 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  lazy val googleTweets: TweetSet = ???
-  lazy val appleTweets: TweetSet = ???
+  lazy val googleTweets: TweetSet = TweetReader.allTweets //TODO: filter
+  lazy val appleTweets: TweetSet = TweetReader.allTweets //TODO: filter
 
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-  lazy val trending: TweetList = ???
+  //TODO lazy val trending: TweetList = ???
+  lazy val trending: TweetList = Nil //TODO: fixme
 }
 
 object Main extends App {
