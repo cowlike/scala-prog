@@ -7,9 +7,10 @@ import TweetReader._
  * A class to represent tweets.
  */
 class Tweet(val user: String, val text: String, val retweets: Int) {
-  override def toString: String =
+  override def toString: String = user + ":" + retweets
+    /*
     "User: " + user + "\n" +
-      "Text: " + text + " [" + retweets + "]"
+      "Text: " + text + " [" + retweets + "]"*/
 }
 
 /**
@@ -136,6 +137,7 @@ abstract class TweetSet {
 
 class Empty extends TweetSet {
 
+  override def toString: String = "_"
   def filter(p: Tweet => Boolean): TweetSet = this
   def filterAcc(p: Tweet => Boolean, acc: TweetSet): TweetSet = acc
 
@@ -161,6 +163,7 @@ class Empty extends TweetSet {
 
 class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
 
+  override def toString: String = "{" + left + elem + right + "}"
   def filter(p: Tweet => Boolean): TweetSet =
     (left filter (p)) union (right filter (p)) union filterAcc(p, new Empty)
 
