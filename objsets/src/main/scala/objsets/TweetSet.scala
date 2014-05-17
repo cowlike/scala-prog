@@ -80,7 +80,8 @@ abstract class TweetSet {
    * and be implemented in the subclasses?
    */
   //def descendingByRetweet: TweetList = ??? TODO: hmmm
-  def descendingByRetweet: TweetList = {
+  
+  def _descendingByRetweet: TweetList = {
     def toList(in: TweetSet, acc: TweetList): TweetList = {
       if (in.isEmpty) acc
       else {
@@ -91,6 +92,17 @@ abstract class TweetSet {
     toList(this, Nil)
   }
 
+  def descendingByRetweet: TweetList = {    
+    def toList(in: TweetSet): TweetList = {      
+      if (in.isEmpty) Nil
+      else {
+        val max = in.mostRetweeted
+        new Cons(max, toList(in.remove(max)))
+      }
+    }
+    toList(this)
+  }
+  
   //TODO: this is a helper for the descending sorter so we don't have to throw
   def isEmpty: Boolean
 
@@ -218,16 +230,21 @@ class Cons(val head: Tweet, val tail: TweetList) extends TweetList {
 object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
-
-  lazy val googleTweets: TweetSet = TweetReader.allTweets //TODO: filter
-  lazy val appleTweets: TweetSet = TweetReader.allTweets //TODO: filter
+    
+  //TODO apply filter function
+  def contains(str: String, lst: List[String]) = !lst.forall(s => !str.contains(s))
+  
+  lazy val googleTweets: TweetSet = TweetReader.allTweets
+  	.filter(tw => contains(tw.text, google))
+  lazy val appleTweets: TweetSet = TweetReader.allTweets
+  	.filter(tw => contains(tw.text, apple))
 
   /**
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
   //TODO lazy val trending: TweetList = ???
-  lazy val trending: TweetList = Nil //TODO: fixme
+  lazy val trending: TweetList = googleTweets.union(appleTweets).descendingByRetweet
 }
 
 object Main extends App {
