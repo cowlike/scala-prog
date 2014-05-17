@@ -2,7 +2,7 @@ object intsets {
   val t1 = new NonEmpty(3, new Empty, new Empty)  //> t1  : NonEmpty = {.3.}
   val t2 = t1 incl 4 incl 1                       //> t2  : IntSet = {{.1.}3{.4.}}
   val t3 = t2 incl 8 incl 2 incl 7                //> t3  : IntSet = {{.1{.2.}}3{.4{{.7.}8.}}}
-  val t4 = t1 union t2                            //> t4  : IntSet = {{.1.}3{.4.}}
+  val t4 = (new Empty) union t2                   //> t4  : IntSet = {{.1.}3{.4.}}
   
   t2.sum                                          //> res0: Int = 8
   t2 filter (x => x % 2 != 0)                     //> res1: IntSet = {{.1.}3.}
