@@ -80,7 +80,6 @@ abstract class TweetSet {
    * Question: Should we implement this method here, or should it remain abstract
    * and be implemented in the subclasses?
    */
-  //def descendingByRetweet: TweetList = ??? TODO: hmmm
 
   def _descendingByRetweet: TweetList = {
     def toList(in: TweetSet, acc: TweetList): TweetList = {
@@ -175,9 +174,14 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     (left union (right union that)) incl elem
   }
 
-  def maxRetweets(acc: Tweet): Tweet = {
+  def _maxRetweets(acc: Tweet): Tweet = {
     def comp(x: Tweet, y: Tweet) = if (x.retweets > y.retweets) x else y
     comp(acc, left maxRetweets ((right maxRetweets (acc))))
+  }
+  def maxRetweets(acc: Tweet): Tweet = {
+    left.maxRetweets(
+        right.maxRetweets(
+            if (elem.retweets > acc.retweets) elem else acc))
   }
   def mostRetweeted = maxRetweets(elem)
 
@@ -235,7 +239,7 @@ object GoogleVsApple {
   val google = List("android", "Android", "galaxy", "Galaxy", "nexus", "Nexus")
   val apple = List("ios", "iOS", "iphone", "iPhone", "ipad", "iPad")
 
-  //TODO apply filter function
+  //apply filter function
   def contains(str: String, lst: List[String]) = !lst.forall(s => !str.contains(s))
 
   lazy val googleTweets: TweetSet = TweetReader.allTweets
@@ -247,7 +251,6 @@ object GoogleVsApple {
    * A list of all tweets mentioning a keyword from either apple or google,
    * sorted by the number of retweets.
    */
-  //TODO lazy val trending: TweetList = ???
   lazy val trending: TweetList = (googleTweets union appleTweets).descendingByRetweet
 }
 
