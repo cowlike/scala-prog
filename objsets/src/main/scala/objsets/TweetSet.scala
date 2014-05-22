@@ -81,17 +81,6 @@ abstract class TweetSet {
    * and be implemented in the subclasses?
    */
 
-  def _descendingByRetweet: TweetList = {
-    def toList(in: TweetSet, acc: TweetList): TweetList = {
-      if (in.isEmpty) acc
-      else {
-        val max = in.mostRetweeted
-        toList(in.remove(max), new Cons(max, acc))
-      }
-    }
-    toList(this, Nil)
-  }
-
   def descendingByRetweet: TweetList = {
     def toList(in: TweetSet): TweetList = {
       if (in.isEmpty) Nil
@@ -170,14 +159,9 @@ class NonEmpty(elem: Tweet, left: TweetSet, right: TweetSet) extends TweetSet {
     if (p(elem)) acc.incl(elem)
     else acc
 
-  def union(that: TweetSet): TweetSet = {
-    (left union (right union that)) incl elem
-  }
+  def union(that: TweetSet): TweetSet = 
+    left.union(right.union(that)).incl(elem)
 
-  def _maxRetweets(acc: Tweet): Tweet = {
-    def comp(x: Tweet, y: Tweet) = if (x.retweets > y.retweets) x else y
-    comp(acc, left maxRetweets ((right maxRetweets (acc))))
-  }
   def maxRetweets(acc: Tweet): Tweet = {
     left.maxRetweets(
         right.maxRetweets(
