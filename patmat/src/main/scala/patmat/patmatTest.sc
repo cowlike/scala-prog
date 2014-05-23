@@ -38,4 +38,8 @@ object patmatTest {
 	
 	insert(12, insert(1, insert(8, l2)))      //> res1: List[Int] = List(1, 1, 5, 8, 10, 12, 15)
 	1 :: 2 :: List()                          //> res2: List[Int] = List(1, 2)
+	
+	def single[T](lst: List[T]): Boolean = !lst.isEmpty && lst.tail.isEmpty
+                                                  //> single: [T](lst: List[T])Boolean
+	single[Int](1 :: 2 :: List())             //> res3: Boolean = false
 }
