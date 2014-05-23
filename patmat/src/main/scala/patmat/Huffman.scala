@@ -99,7 +99,19 @@ object Huffman {
    * head of the list should have the smallest weight), where the weight
    * of a leaf is the frequency of the character.
    */
-  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = ???
+  def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
+    def insert(leaf: Leaf, acc: List[Leaf]): List[Leaf] =
+      if (acc.isEmpty) List(leaf)
+      else acc.head match {
+        case Leaf(ch, wt) => if (leaf.weight <= wt) leaf :: acc else acc.head :: insert(leaf, acc.tail)
+      }
+
+    def sort(freqs: List[(Char, Int)], acc: List[Leaf]): List[Leaf] =
+      if (freqs.isEmpty) acc
+      else sort(freqs.tail, insert(Leaf(freqs.head._1, freqs.head._2), acc))
+
+    sort(freqs, List())
+  }
 
   /**
    * Checks whether the list `trees` contains only one single code tree.
