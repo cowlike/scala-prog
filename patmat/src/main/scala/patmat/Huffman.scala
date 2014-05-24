@@ -42,6 +42,14 @@ object Huffman {
   // Part 2: Generating Huffman trees
 
   /**
+   * My additions to the object
+   */
+  def insertByWeight[T <: CodeTree](item: T, acc: List[T]): List[T] =
+    if (acc.isEmpty) List(item)
+    else if (weight(item) <= weight(acc.head)) item :: acc
+    else acc.head :: insertByWeight(item, acc.tail)
+
+  /**
    * In this assignment, we are working with lists of characters. This function allows
    * you to easily create a character list from a given string.
    */
@@ -100,15 +108,9 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
   def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
-    def insert(leaf: Leaf, acc: List[Leaf]): List[Leaf] =
-      if (acc.isEmpty) List(leaf)
-      else acc.head match {
-        case Leaf(ch, wt) => if (leaf.weight <= wt) leaf :: acc else acc.head :: insert(leaf, acc.tail)
-      }
-
     def sort(freqs: List[(Char, Int)], acc: List[Leaf]): List[Leaf] =
       if (freqs.isEmpty) acc
-      else sort(freqs.tail, insert(Leaf(freqs.head._1, freqs.head._2), acc))
+      else sort(freqs.tail, insertByWeight(Leaf(freqs.head._1, freqs.head._2), acc))
 
     sort(freqs, List())
   }
@@ -133,8 +135,10 @@ object Huffman {
   def combine(trees: List[CodeTree]): List[CodeTree] =
     if (trees.isEmpty || singleton(trees))
       trees
-    else
-      trees//TODO: needs real impl
+    else {
+      val fork = makeCodeTree(trees.head, trees.tail.head)
+      insertByWeight(fork, trees.tail.tail)
+    }
 
   /**
    * This function will be called in the following way:
@@ -153,7 +157,10 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-  def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+  //def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
+  def until(isSingleton: List[CodeTree] => Boolean, combine: List[CodeTree] => List[CodeTree])(trees: List[CodeTree]): List[CodeTree] =
+    if (isSingleton(trees)) trees
+    else until(isSingleton, combine)(combine(trees))
 
   /**
    * This function creates a code tree which is optimal to encode the text `chars`.
@@ -161,7 +168,10 @@ object Huffman {
    * The parameter `chars` is an arbitrary text. This function extracts the character
    * frequencies from that text and creates a code tree based on them.
    */
-  def createCodeTree(chars: List[Char]): CodeTree = ???
+  def createCodeTree(chars: List[Char]): CodeTree = {
+    val leaves = makeOrderedLeafList(times(chars))
+    until(singleton, combine)(leaves).head
+  }
 
   // Part 3: Decoding
 
