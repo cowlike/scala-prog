@@ -225,7 +225,7 @@ object Huffman {
     def getBits(subTree: CodeTree, list: List[Char], acc: List[Bit]): List[Bit] =
       if (list.isEmpty) acc
       else subTree match {
-        case Fork(l, r, _, _) => 
+        case Fork(l, r, _, _) =>
           if (chars(l).contains(list.head)) getBits(l, list, 0 :: acc) else getBits(r, list, 1 :: acc)
         case Leaf(_, _) => getBits(tree, list.tail, acc)
       }
@@ -245,7 +245,6 @@ object Huffman {
     else table.head match {
       case (ch, bits) => if (ch == char) bits else codeBits(table.tail)(char)
     }
-  
 
   /**
    * Given a code tree, create a code table which contains, for every character in the
@@ -255,14 +254,22 @@ object Huffman {
    * a valid code tree that can be represented as a code table. Using the code tables of the
    * sub-trees, think of how to build the code table for the entire tree.
    */
-  def convert(tree: CodeTree): CodeTable = ???
+  def convert(tree: CodeTree): CodeTable = {
+    def mkTable(subTree: CodeTree, acc: CodeTable): CodeTable =
+      subTree match {
+        case Fork(l, r, chars, wt) => mergeCodeTables(mkTable(l, acc), mkTable(r, acc))
+        case Leaf(ch, _) => (ch, encode(tree)(List(ch))) :: acc
+      }
+
+    mkTable(tree, List())
+  }
 
   /**
    * This function takes two code tables and merges them into one. Depending on how you
    * use it in the `convert` method above, this merge method might also do some transformations
    * on the two parameter code tables.
    */
-  def mergeCodeTables(a: CodeTable, b: CodeTable): CodeTable = ???
+  def mergeCodeTables(a: CodeTable, b: CodeTable): CodeTable = a ::: b
 
   /**
    * This function encodes `text` according to the code tree `tree`.
@@ -270,6 +277,12 @@ object Huffman {
    * To speed up the encoding process, it first converts the code tree to a code table
    * and then uses it to perform the actual encoding.
    */
-  def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
-
+  def quickEncode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+    def qEncode(tbl: CodeTable, txt: List[Char], acc: List[Bit]): List[Bit] =
+      if (txt.isEmpty) acc
+      else qEncode(tbl, txt.tail, codeBits(tbl)(txt.head).reverse ::: acc)
+    
+    qEncode(convert(tree), text, List()).reverse
+  }
+    
 }

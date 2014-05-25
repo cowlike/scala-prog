@@ -53,6 +53,12 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("quickEncode and encode are same") {
+    new TestTrees {
+      assert(encode(t3)("hello, world".toList) === quickEncode(t3)("hello, world".toList))
+    }
+  }
+  
   test("codeBits for character") {
     new TestTrees {
       assert(codeBits(tbl1)('a') === List(0, 1, 0))
