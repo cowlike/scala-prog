@@ -221,7 +221,16 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = ???
+  def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+    def getBits(subTree: CodeTree, list: List[Char], acc: List[Bit]): List[Bit] =
+      if (list.isEmpty) acc
+      else subTree match {
+        case Fork(l, r, _, _) => 
+          if (chars(l).contains(list.head)) getBits(l, list, 0 :: acc) else getBits(r, list, 1 :: acc)
+        case Leaf(_, _) => getBits(tree, list.tail, acc)
+      }
+    getBits(tree, text, List()).reverse
+  }
 
   // Part 4b: Encoding using code table
 
@@ -231,7 +240,12 @@ object Huffman {
    * This function returns the bit sequence that represents the character `char` in
    * the code table `table`.
    */
-  def codeBits(table: CodeTable)(char: Char): List[Bit] = ???
+  def codeBits(table: CodeTable)(char: Char): List[Bit] =
+    if (table.isEmpty) throw new NoSuchElementException("character not in table")
+    else table.head match {
+      case (ch, bits) => if (ch == char) bits else codeBits(table.tail)(char)
+    }
+  
 
   /**
    * Given a code tree, create a code table which contains, for every character in the
