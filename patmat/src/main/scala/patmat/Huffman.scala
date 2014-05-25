@@ -45,9 +45,10 @@ object Huffman {
    * My additions to the object
    */
   def insertByWeight[T <: CodeTree](item: T, acc: List[T]): List[T] =
-    if (acc.isEmpty) List(item)
-    else if (weight(item) <= weight(acc.head)) item :: acc
-    else acc.head :: insertByWeight(item, acc.tail)
+    acc match {
+      case List() => List(item)
+      case x :: xs => if (weight(item) <= weight(x)) item :: acc else x :: insertByWeight(item, xs)
+    }
 
   /**
    * In this assignment, we are working with lists of characters. This function allows
@@ -106,10 +107,6 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
   def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
-    def sort0(freqs: List[(Char, Int)], acc: List[Leaf]): List[Leaf] =
-      if (freqs.isEmpty) acc
-      else sort(freqs.tail, insertByWeight(Leaf(freqs.head._1, freqs.head._2), acc))
-
     def sort(freqs: List[(Char, Int)], acc: List[Leaf]): List[Leaf] =
       freqs match {
         case List() => acc
