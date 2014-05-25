@@ -3,39 +3,36 @@ package patmat
 object patmatTest {
 	import Huffman._
 	
-	val str = "Now is the time for all good men to come to the aid of their country"
-                                                  //> str  : String = Now is the time for all good men to come to the aid of their
-                                                  //|  country
-	val leaves = makeOrderedLeafList(times(string2Chars(str)))
-                                                  //> leaves  : List[patmat.Huffman.Leaf] = List(Leaf(y,1), Leaf(u,1), Leaf(g,1), 
-                                                  //| Leaf(s,1), Leaf(w,1), Leaf(N,1), Leaf(c,2), Leaf(n,2), Leaf(d,2), Leaf(l,2),
-                                                  //|  Leaf(a,2), Leaf(f,2), Leaf(r,3), Leaf(m,3), Leaf(h,3), Leaf(i,4), Leaf(e,6)
-                                                  //| , Leaf(t,7), Leaf(o,9), Leaf( ,15))
+	val str = "ABCDEFGH"                      //> str  : String = ABCDEFGH
+	val codeTree = createCodeTree(string2Chars(str))
+                                                  //> codeTree  : patmat.Huffman.CodeTree = Fork(Fork(Fork(Leaf(F,1),Leaf(E,1),Lis
+                                                  //| t(F, E),2),Fork(Leaf(H,1),Leaf(G,1),List(H, G),2),List(F, E, H, G),4),Fork(F
+                                                  //| ork(Leaf(B,1),Leaf(A,1),List(B, A),2),Fork(Leaf(D,1),Leaf(C,1),List(D, C),2)
+                                                  //| ,List(B, A, D, C),4),List(F, E, H, G, B, A, D, C),8)
 
-	val x1 = until(singleton, combine)(leaves)//> x1  : List[patmat.Huffman.CodeTree] = List(Fork(Fork(Fork(Leaf(t,7),Fork(For
-                                                  //| k(Fork(Leaf(y,1),Leaf(u,1),List(y, u),2),Leaf(c,2),List(y, u, c),4),Fork(For
-                                                  //| k(Leaf(w,1),Leaf(N,1),List(w, N),2),Fork(Leaf(g,1),Leaf(s,1),List(g, s),2),L
-                                                  //| ist(w, N, g, s),4),List(y, u, c, w, N, g, s),8),List(t, y, u, c, w, N, g, s)
-                                                  //| ,15),Leaf( ,15),List(t, y, u, c, w, N, g, s,  ),30),Fork(Fork(Fork(Fork(Leaf
-                                                  //| (l,2),Leaf(a,2),List(l, a),4),Fork(Leaf(n,2),Leaf(d,2),List(n, d),4),List(l,
-                                                  //|  a, n, d),8),Fork(Leaf(i,4),Fork(Leaf(f,2),Leaf(r,3),List(f, r),5),List(i, f
-                                                  //| , r),9),List(l, a, n, d, i, f, r),17),Fork(Leaf(o,9),Fork(Fork(Leaf(m,3),Lea
-                                                  //| f(h,3),List(m, h),6),Leaf(e,6),List(m, h, e),12),List(o, m, h, e),21),List(l
-                                                  //| , a, n, d, i, f, r, o, m, h, e),38),List(t, y, u, c, w, N, g, s,  , l, a, n,
-                                                  //|  d, i, f, r, o, m, h, e),68))
-	val x2 = createCodeTree(string2Chars(str))//> x2  : patmat.Huffman.CodeTree = Fork(Fork(Fork(Leaf(t,7),Fork(Fork(Fork(Leaf
-                                                  //| (y,1),Leaf(u,1),List(y, u),2),Leaf(c,2),List(y, u, c),4),Fork(Fork(Leaf(w,1)
-                                                  //| ,Leaf(N,1),List(w, N),2),Fork(Leaf(g,1),Leaf(s,1),List(g, s),2),List(w, N, g
-                                                  //| , s),4),List(y, u, c, w, N, g, s),8),List(t, y, u, c, w, N, g, s),15),Leaf( 
-                                                  //| ,15),List(t, y, u, c, w, N, g, s,  ),30),Fork(Fork(Fork(Fork(Leaf(l,2),Leaf(
-                                                  //| a,2),List(l, a),4),Fork(Leaf(n,2),Leaf(d,2),List(n, d),4),List(l, a, n, d),8
-                                                  //| ),Fork(Leaf(i,4),Fork(Leaf(f,2),Leaf(r,3),List(f, r),5),List(i, f, r),9),Lis
-                                                  //| t(l, a, n, d, i, f, r),17),Fork(Leaf(o,9),Fork(Fork(Leaf(m,3),Leaf(h,3),List
-                                                  //| (m, h),6),Leaf(e,6),List(m, h, e),12),List(o, m, h, e),21),List(l, a, n, d, 
-                                                  //| i, f, r, o, m, h, e),38),List(t, y, u, c, w, N, g, s,  , l, a, n, d, i, f, r
-                                                  //| , o, m, h, e),68)
-	x1.head == x2                             //> res0: Boolean = true
-
+	decode(codeTree, List(1,0,0,0,1,0,1,0))   //> res0: List[Char] = List(B, H)
+	decode(codeTree, List(1,0,1,1))           //> res1: List[Char] = List(A)
+	decodedSecret                             //> res2: List[Char] = List(h, u, f, f, m, a, n, e, s, t, c, o, o, l)
+	
+	
+	
+	def la = Leaf('A',8)                      //> la: => patmat.Huffman.Leaf
+  def lb = Leaf('B',3)                            //> lb: => patmat.Huffman.Leaf
+  def lc = Leaf('C',1)                            //> lc: => patmat.Huffman.Leaf
+  def ld = Leaf('D',1)                            //> ld: => patmat.Huffman.Leaf
+  def le = Leaf('E',1)                            //> le: => patmat.Huffman.Leaf
+  def lf = Leaf('F',1)                            //> lf: => patmat.Huffman.Leaf
+  def lg = Leaf('G',1)                            //> lg: => patmat.Huffman.Leaf
+  def lh = Leaf('H',1)                            //> lh: => patmat.Huffman.Leaf
+  val s2c = string2Chars _                        //> s2c  : String => List[Char] = <function1>
+  val myTree = Fork(la, Fork(Fork(lb, Fork(lc,ld,s2c("CD"),2), s2c("BCD"),5), Fork(Fork(le,lf,s2c("EF"),2), Fork(lg,lh,s2c("GH"),2), s2c("EFGH"),4), s2c("BCDEFGH"),9), s2c("ABCDEFGH"), 17)
+                                                  //> myTree  : patmat.Huffman.Fork = Fork(Leaf(A,8),Fork(Fork(Leaf(B,3),Fork(Leaf
+                                                  //| (C,1),Leaf(D,1),List(C, D),2),List(B, C, D),5),Fork(Fork(Leaf(E,1),Leaf(F,1)
+                                                  //| ,List(E, F),2),Fork(Leaf(G,1),Leaf(H,1),List(G, H),2),List(E, F, G, H),4),Li
+                                                  //| st(B, C, D, E, F, G, H),9),List(A, B, C, D, E, F, G, H),17)
+	decode(myTree, List(1,0,0,0,1,0,1,0))     //> res3: List[Char] = List(B, A, C)
+	decode(myTree, List(1,0,1,1))             //> res4: List[Char] = List(D)
+		
   def contains(char: Char, list: List[(Char, Int)]): Boolean =
     if (list.isEmpty) false
     else list.head match {
@@ -44,8 +41,8 @@ object patmatTest {
 
   val l1 = List('x', 'a', 'b', 'a', 'b', 'c', 'b')//> l1  : List[Char] = List(x, a, b, a, b, c, b)
   val t = Huffman.times(l1)                       //> t  : List[(Char, Int)] = List((x,1), (a,2), (b,3), (c,1))
-  makeOrderedLeafList(t)                          //> res1: List[patmat.Huffman.Leaf] = List(Leaf(c,1), Leaf(x,1), Leaf(a,2), Leaf
-                                                  //| (b,3))
+  makeOrderedLeafList(t)                          //> res5: List[patmat.Huffman.Leaf] = List(Leaf(c,1), Leaf(x,1), Leaf(a,2), Lea
+                                                  //| f(b,3))
   
   val l2 = List(1, 5, 10, 15)                     //> l2  : List[Int] = List(1, 5, 10, 15)
   def insert(i: Int, acc: List[Int]): List[Int] =
@@ -54,10 +51,10 @@ object patmatTest {
   		case n => if (i <= n) i :: acc else acc.head :: insert(i, acc.tail)
   	}                                         //> insert: (i: Int, acc: List[Int])List[Int]
 	
-	insert(12, insert(1, insert(8, l2)))      //> res2: List[Int] = List(1, 1, 5, 8, 10, 12, 15)
-	1 :: 2 :: List()                          //> res3: List[Int] = List(1, 2)
+	insert(12, insert(1, insert(8, l2)))      //> res6: List[Int] = List(1, 1, 5, 8, 10, 12, 15)
+	1 :: 2 :: List()                          //> res7: List[Int] = List(1, 2)
 	
 	def single[T](lst: List[T]): Boolean = !lst.isEmpty && lst.tail.isEmpty
                                                   //> single: [T](lst: List[T])Boolean
-	single[Int](1 :: 2 :: List())             //> res4: Boolean = false
+	single[Int](1 :: 2 :: List())             //> res8: Boolean = false
 }
