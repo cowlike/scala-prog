@@ -86,18 +86,16 @@ object Huffman {
   def times(chars: List[Char]): List[(Char, Int)] = {
 
     def insert(char: Char, list: List[(Char, Int)]): List[(Char, Int)] =
-      if (list.isEmpty) (char, 1) :: list
-      else list.head match {
-        case (ch, n) =>
-          if (char == ch) (ch, n + 1) :: list.tail
-          else list.head :: insert(char, list.tail)
+      list match {
+        case List() => (char, 1) :: list
+        case (ch, n) :: xs => if (char == ch) (char, n + 1) :: xs else list.head :: insert(char, xs)
       }
-
-    def part(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] =
-      if (chars.isEmpty) acc
-      else part(chars.tail, insert(chars.head, acc))
-
-    part(chars, List())
+    def sort(chars: List[Char], acc: List[(Char, Int)]): List[(Char, Int)] =
+      chars match {
+        case List() => acc
+        case x :: xs => sort(xs, insert(x, acc))
+      }
+    sort(chars, List())
   }
 
   /**
@@ -108,9 +106,15 @@ object Huffman {
    * of a leaf is the frequency of the character.
    */
   def makeOrderedLeafList(freqs: List[(Char, Int)]): List[Leaf] = {
-    def sort(freqs: List[(Char, Int)], acc: List[Leaf]): List[Leaf] =
+    def sort0(freqs: List[(Char, Int)], acc: List[Leaf]): List[Leaf] =
       if (freqs.isEmpty) acc
       else sort(freqs.tail, insertByWeight(Leaf(freqs.head._1, freqs.head._2), acc))
+
+    def sort(freqs: List[(Char, Int)], acc: List[Leaf]): List[Leaf] =
+      freqs match {
+        case List() => acc
+        case x :: xs => sort(xs, insertByWeight(Leaf(x._1, x._2), acc))
+      }
 
     sort(freqs, List())
   }
@@ -133,8 +137,7 @@ object Huffman {
    * unchanged.
    */
   def combine(trees: List[CodeTree]): List[CodeTree] =
-    if (trees.isEmpty || singleton(trees))
-      trees
+    if (trees.isEmpty || singleton(trees)) trees
     else {
       val fork = makeCodeTree(trees.head, trees.tail.head)
       insertByWeight(fork, trees.tail.tail)
@@ -241,9 +244,9 @@ object Huffman {
    * the code table `table`.
    */
   def codeBits(table: CodeTable)(char: Char): List[Bit] =
-    if (table.isEmpty) throw new NoSuchElementException("character not in table")
-    else table.head match {
-      case (ch, bits) => if (ch == char) bits else codeBits(table.tail)(char)
+    table match {
+      case List() => throw new NoSuchElementException("character not in table")
+      case (ch, bits) :: xs => if (ch == char) bits else codeBits(xs)(char)
     }
 
   /**
@@ -281,8 +284,7 @@ object Huffman {
     def qEncode(tbl: CodeTable, txt: List[Char], acc: List[Bit]): List[Bit] =
       if (txt.isEmpty) acc
       else qEncode(tbl, txt.tail, codeBits(tbl)(txt.head).reverse ::: acc)
-    
+
     qEncode(convert(tree), text, List()).reverse
   }
-    
 }

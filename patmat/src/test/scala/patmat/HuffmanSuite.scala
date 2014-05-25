@@ -13,6 +13,19 @@ class HuffmanSuite extends FunSuite {
     val t1 = Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5)
     val t2 = Fork(Fork(Leaf('a', 2), Leaf('b', 3), List('a', 'b'), 5), Leaf('d', 4), List('a', 'b', 'd'), 9)
     val t3 = createCodeTree(string2Chars("hello, world"))
+    val t4 = createCodeTree(string2Chars("ABCDEFGH"))
+
+    def la = Leaf('A', 8)
+    def lb = Leaf('B', 3)
+    def lc = Leaf('C', 1)
+    def ld = Leaf('D', 1)
+    def le = Leaf('E', 1)
+    def lf = Leaf('F', 1)
+    def lg = Leaf('G', 1)
+    def lh = Leaf('H', 1)
+    val s = string2Chars _
+    val exampleCodeTree = Fork(la, Fork(Fork(lb, Fork(lc, ld, s("CD"), 2), s("BCD"), 5), Fork(Fork(le, lf, s("EF"), 2), Fork(lg, lh, s("GH"), 2), s("EFGH"), 4), s("BCDEFGH"), 9), s("ABCDEFGH"), 17)
+
     val tbl1 = List(('a', List(0, 1, 0)), ('b', List(0, 1, 1))) //sample code table
   }
 
@@ -58,7 +71,7 @@ class HuffmanSuite extends FunSuite {
       assert(encode(t3)("hello, world".toList) === quickEncode(t3)("hello, world".toList))
     }
   }
-  
+
   test("codeBits for character") {
     new TestTrees {
       assert(codeBits(tbl1)('a') === List(0, 1, 0))
@@ -73,4 +86,21 @@ class HuffmanSuite extends FunSuite {
     }
   }
 
+  test("encode and quickEncode should give same result") {
+    new TestTrees {
+      val cc = string2Chars("ACGDE")
+      assert(encode(t4)(cc) === quickEncode(t4)(cc))
+    }
+  }
+
+  test("test results of decode from assignment example code tree") {
+    new TestTrees {
+      assert(decode(exampleCodeTree, List(1, 0, 0, 0, 1, 0, 1, 0)) === List('B', 'A', 'C'))
+      assert(decode(exampleCodeTree, List(1, 0, 1, 1)) === List('D'))
+    }
+  }
+  
+  test("test decodedSecret") {
+    assert(decodedSecret === string2Chars("huffmanestcool"))
+  }
 }
