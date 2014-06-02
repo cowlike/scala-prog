@@ -14,4 +14,5 @@ object samples {
   val ys = List(5.0, 6, 7, 8)                     //> ys  : List[Double] = List(5.0, 6.0, 7.0, 8.0)
   scalarProducts(xs, ys)                          //> res0: Double = 70.0
   scalarProducts2(xs, ys)                         //> res1: Double = 260.0
+  xs zip ys map{case (x, y) => x * y} sum         //> res2: Double = 70.0
 }
