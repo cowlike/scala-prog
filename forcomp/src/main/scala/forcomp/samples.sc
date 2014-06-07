@@ -39,7 +39,7 @@ object samples {
   
   wordOcc("a test")                               //> res3: forcomp.samples.Occurrences = List(( ,1), (a,1), (e,1), (s,1), (t,2))
                                                   //| 
-                                                  
-  
-  wordOccurrences("bc")                           //> res4: forcomp.samples.Occurrences = List((c,1), (b,1))
+  wordOccurrences("a test")                       //> res4: forcomp.samples.Occurrences = List(( ,1), (a,1), (t,2), (s,1), (e,1))
+                                                  //| 
+ List("this","is","a","test").mkString            //> res5: String = thisisatest
 }
