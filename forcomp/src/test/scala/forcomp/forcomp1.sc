@@ -1,6 +1,6 @@
 package forcomp
 
-object samples {
+object forcomp1 {
   def scalarProducts(xs: List[Double], ys: List[Double]): Double =
     (for ((x, y) <- xs zip ys) yield x * y).sum   //> scalarProducts: (xs: List[Double], ys: List[Double])Double
 
@@ -30,16 +30,16 @@ object samples {
       }
 
     addLetter(w.toLowerCase().toList, Map()).foldLeft(List(): List[(Char, Int)]) { (t, v) => (v._1, v._2) :: t }
-  }                                               //> wordOccurrences: (w: forcomp.samples.Word)forcomp.samples.Occurrences
+  }                                               //> wordOccurrences: (w: forcomp.forcomp1.Word)forcomp.forcomp1.Occurrences
 
   def wordOcc(w: Word): Occurrences = {
   	val lst = w.toLowerCase.toList
   	lst.groupBy {c => c}.foldLeft(List(): List[(Char, Int)]) { (t, v) => (v._1, v._2.length) :: t }.sorted
-  }                                               //> wordOcc: (w: forcomp.samples.Word)forcomp.samples.Occurrences
+  }                                               //> wordOcc: (w: forcomp.forcomp1.Word)forcomp.forcomp1.Occurrences
   
-  wordOcc("a test")                               //> res3: forcomp.samples.Occurrences = List(( ,1), (a,1), (e,1), (s,1), (t,2))
-                                                  //| 
-  wordOccurrences("a test")                       //> res4: forcomp.samples.Occurrences = List(( ,1), (a,1), (t,2), (s,1), (e,1))
-                                                  //| 
+  wordOcc("a test")                               //> res3: forcomp.forcomp1.Occurrences = List(( ,1), (a,1), (e,1), (s,1), (t,2)
+                                                  //| )
+  wordOccurrences("a test")                       //> res4: forcomp.forcomp1.Occurrences = List(( ,1), (a,1), (t,2), (s,1), (e,1)
+                                                  //| )
  List("this","is","a","test").mkString            //> res5: String = thisisatest
 }
