@@ -20,17 +20,26 @@ object samples {
   type Occurrences = List[(Char, Int)]
 
   def wordOccurrences(w: Word): Occurrences = {
-    def addLetter(w: List[Char], acc: Map[Char,Int]): Map[Char,Int] =
+    def addLetter(w: List[Char], acc: Map[Char, Int]): Map[Char, Int] =
       w match {
         case List() => acc
         case x :: xs => acc get x match {
-        	case Some(n) => addLetter(xs, acc updated(x, n + 1))
-        	case None => addLetter(xs, acc updated(x, 1))
+          case Some(n) => addLetter(xs, acc updated (x, n + 1))
+          case None => addLetter(xs, acc updated (x, 1))
         }
       }
 
-    addLetter(w.toLowerCase().toList, Map()).foldLeft(List(): List[(Char, Int)]) {(t, v) => (v._1, v._2) :: t}
+    addLetter(w.toLowerCase().toList, Map()).foldLeft(List(): List[(Char, Int)]) { (t, v) => (v._1, v._2) :: t }
   }                                               //> wordOccurrences: (w: forcomp.samples.Word)forcomp.samples.Occurrences
 
-	wordOccurrences("bc")                     //> res3: forcomp.samples.Occurrences = List((c,1), (b,1))
+  def wordOcc(w: Word): Occurrences = {
+  	val lst = w.toLowerCase.toList
+  	lst.groupBy {c => c}.foldLeft(List(): List[(Char, Int)]) { (t, v) => (v._1, v._2.length) :: t }.sorted
+  }                                               //> wordOcc: (w: forcomp.samples.Word)forcomp.samples.Occurrences
+  
+  wordOcc("a test")                               //> res3: forcomp.samples.Occurrences = List(( ,1), (a,1), (e,1), (s,1), (t,2))
+                                                  //| 
+                                                  
+  
+  wordOccurrences("bc")                           //> res4: forcomp.samples.Occurrences = List((c,1), (b,1))
 }
