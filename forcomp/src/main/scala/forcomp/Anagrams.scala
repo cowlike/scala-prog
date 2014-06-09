@@ -38,13 +38,14 @@ object Anagrams {
    */
   def wordOccurrences(w: Word): Occurrences = {
     val chMap = w.toLowerCase.toList.groupBy { c => c }
+    
     chMap.foldLeft(List(): List[(Char, Int)]) {
       (t, v) => (v._1, v._2.length) :: t
     }.sorted
   }
 
   /** Converts a sentence into its character occurrence list. */
-  def sentenceOccurrences(s: Sentence): Occurrences = wordOccurrences(s.mkString)
+  def sentenceOccurrences(s: Sentence): Occurrences = (s flatMap wordOccurrences).sorted
 
   /**
    * The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
@@ -140,7 +141,7 @@ object Anagrams {
    *  and has no zero-entries.
    */
   def subtract(x: Occurrences, y: Occurrences): Occurrences = 
-    x filter (x => !(y contains x))
+    x filterNot (x => y contains x)
 
   /**
    * Returns a list of all anagram sentences of the given sentence.
