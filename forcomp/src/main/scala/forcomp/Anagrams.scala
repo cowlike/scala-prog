@@ -62,13 +62,26 @@ object Anagrams {
    *    List(('a', 1), ('e', 1), ('t', 1)) -> Seq("ate", "eat", "tea")
    *
    */
-  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] =
+  lazy val dictionaryByOccurrences_0: Map[Occurrences, List[Word]] =
     dictionary.foldLeft(Map(): Map[Occurrences, List[String]]) { (t, v) =>
       val value = t get wordOccurrences(v)
       value match {
         case Some(lst) => t updated (wordOccurrences(v), v :: lst)
         case None => t updated (wordOccurrences(v), List(v))
       }
+    }
+
+  /*
+   * Slightly more readable? Calculate the key value only once
+   */
+  lazy val dictionaryByOccurrences: Map[Occurrences, List[Word]] =
+    dictionary.foldLeft(Map(): Map[Occurrences, List[String]]) { (t, v) =>
+      val key = wordOccurrences(v)
+      val newVal = (t get key) match {
+        case Some(lst) => v :: lst
+        case None => List(v)
+      }
+      t updated (key, newVal)
     }
 
   /** Returns all the anagrams of a given word. */
@@ -101,7 +114,19 @@ object Anagrams {
    *  Note that the order of the occurrence list subsets does not matter -- the subsets
    *  in the example above could have been displayed in some other order.
    */
-  def combinations(occurrences: Occurrences): List[Occurrences] = ???
+  def combinations(occurrences: Occurrences): List[Occurrences] = {
+    def expand(p: (Char, Int)): List[List[(Char, Int)]] =
+      p match {
+        case (_, 0) => List(List())
+        case (c, n) => List((c, n)) :: expand(c, n - 1)
+      }
+    def combine(ls: List[List[List[(Char, Int)]]]): List[List[(Char, Int)]] =
+      ls match {
+      case List() => List(List())
+      case x :: xs => x flatMap (e => for (v <- combine(xs)) yield List(e ::: v).flatten)
+    }      
+    combine(occurrences map expand)
+  }
 
   /**
    * Subtracts occurrence list `y` from occurrence list `x`.

@@ -19,13 +19,7 @@ object forcomp2 {
     case (c, n) => for (x <- 1 to n) yield (c, x)
   })                                              //> res1: List[scala.collection.immutable.IndexedSeq[(Char, Int)]] = List(Vector
                                                   //| ((a,1), (a,2)), Vector((b,1), (b,2)))
-	def subsets(p: (Char, Int)): List[List[(Char, Int)]] =
-		p match {
-			case (_, 0) => List(List())
-			case (c, n) => List((c, n)) :: subsets (c, n-1)
-		}                                 //> subsets: (p: (Char, Int))List[List[(Char, Int)]]
-		
-	myList map subsets                        //> res2: List[List[List[(Char, Int)]]] = List(List(List((a,2)), List((a,1)), Li
-                                                  //| st()), List(List((b,2)), List((b,1)), List()))
-	List() ::: List()                         //> res3: List[Nothing] = List()
+	combinations(myList)                      //> res2: List[forcomp.Anagrams.Occurrences] = List(List((a,2), (b,2)), List((a,
+                                                  //| 2), (b,1)), List((a,2)), List((a,1), (b,2)), List((a,1), (b,1)), List((a,1))
+                                                  //| , List((b,2)), List((b,1)), List())
 }
