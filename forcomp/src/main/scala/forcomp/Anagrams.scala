@@ -38,14 +38,14 @@ object Anagrams {
    */
   def wordOccurrences(w: Word): Occurrences = {
     val chMap = w.toLowerCase.toList.groupBy { c => c }
-    
+
     chMap.foldLeft(List(): List[(Char, Int)]) {
       (t, v) => (v._1, v._2.length) :: t
     }.sorted
   }
 
   /** Converts a sentence into its character occurrence list. */
-  def sentenceOccurrences(s: Sentence): Occurrences = (s flatMap wordOccurrences).sorted
+  def sentenceOccurrences(s: Sentence): Occurrences = wordOccurrences(s.mkString)
 
   /**
    * The `dictionaryByOccurrences` is a `Map` from different occurrences to a sequence of all
@@ -123,9 +123,9 @@ object Anagrams {
       }
     def combine(ls: List[List[List[(Char, Int)]]]): List[List[(Char, Int)]] =
       ls match {
-      case List() => List(List())
-      case x :: xs => x flatMap (e => for (v <- combine(xs)) yield List(e ::: v).flatten)
-    }      
+        case List() => List(List())
+        case x :: xs => x flatMap (e => for (v <- combine(xs)) yield List(e ::: v).flatten)
+      }
     combine(occurrences map expand)
   }
 
@@ -140,8 +140,16 @@ object Anagrams {
    *  Note: the resulting value is an occurrence - meaning it is sorted
    *  and has no zero-entries.
    */
-  def subtract(x: Occurrences, y: Occurrences): Occurrences = 
-    x filterNot (x => y contains x)
+  def subtract(x: Occurrences, y: Occurrences): Occurrences = {
+    def count(o: (Char, Int), os: Occurrences): Int =
+      os.filter(x => x._1 == o._1) match {
+        case List() => 0
+        case x :: xs => x._2
+      }
+    for {
+      x1 <- x
+    } yield (x1._1, x1._2 - count(x1, y))
+  }.filter(x => x._2 > 0)
 
   /**
    * Returns a list of all anagram sentences of the given sentence.

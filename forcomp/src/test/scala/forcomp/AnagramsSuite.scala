@@ -24,6 +24,10 @@ class AnagramsSuite extends FunSuite {
     assert(sentenceOccurrences(List("abcd", "e")) === List(('a', 1), ('b', 1), ('c', 1), ('d', 1), ('e', 1)))
   }
 
+  test("sentenceOccurrences2: abcd de") {
+    assert(sentenceOccurrences(List("abcd", "de")) === List(('a', 1), ('b', 1), ('c', 1), ('d', 2), ('e', 1)))
+  }
+
 
 
   test("dictionaryByOccurrences.get: eat") {
@@ -47,6 +51,13 @@ class AnagramsSuite extends FunSuite {
     val r = List(('r', 1))
     val lad = List(('a', 1), ('d', 1), ('l', 1))
     assert(subtract(lard, r) === lad)
+  }
+
+  test("subtract: jimmy - my") {
+    val jimmy = List(('i', 1), ('j', 1), ('m', 2), ('y', 1))
+    val my = List(('m', 1), ('y', 1))
+    val jim = List(('i', 1), ('j', 1), ('m', 1))
+    assert(subtract(jimmy, my) === jim)
   }
 
 
