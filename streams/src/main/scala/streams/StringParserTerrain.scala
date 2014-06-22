@@ -69,7 +69,12 @@ trait StringParserTerrain extends GameDef {
    * Hint: you can use the functions `indexWhere` and / or `indexOf` of the
    * `Vector` class
    */
-  def findChar(c: Char, levelVector: Vector[Vector[Char]]): Pos = ???
+  def findChar(c: Char, levelVector: Vector[Vector[Char]]): Pos =
+    (for {
+      x <- 0 until levelVector.length
+      y <- 0 until levelVector(0).length
+      if levelVector(x)(y) == c
+    } yield new Pos(x, y)).head
 
   private lazy val vector: Vector[Vector[Char]] =
     Vector(level.split("\n").map(str => Vector(str: _*)): _*)
@@ -77,5 +82,4 @@ trait StringParserTerrain extends GameDef {
   lazy val terrain: Terrain = terrainFunction(vector)
   lazy val startPos: Pos = findChar('S', vector)
   lazy val goal: Pos = findChar('T', vector)
-
 }
