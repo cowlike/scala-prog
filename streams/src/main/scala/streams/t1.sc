@@ -51,4 +51,5 @@ object t1 {
       |------ooo-""".stripMargin
       
    findChar2('S', LevelTest.vector)               //> res2: streams.t1.Pos = Pos(1,2)
+   
 }
