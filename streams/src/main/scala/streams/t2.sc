@@ -13,4 +13,7 @@ object t2 {
 	(s1 #::: s2).toSet                        //> res3: scala.collection.immutable.Set[Int] = Set(1, 2, 3, 4)
 	0 #:: s1                                  //> res4: scala.collection.immutable.Stream[Int] = Stream(0, ?)
 	val x: (Int, Char) = (1, 'a')             //> x  : (Int, Char) = (1,a)
+	
+	List(List(),List(1,2),List(),List(1,2,4,5)) flatMap(l => l map (_ * 2))
+                                                  //> res5: List[Int] = List(2, 4, 2, 4, 8, 10)
 }

@@ -45,8 +45,9 @@ class BloxorzSuite extends FunSuite {
 	  new Level1 {
 	    val nh = neighborsWithHistory(startBlock, Nil)
 	    println("neighbors: " + nh.toList)
-	    println("new only: " + newNeighborsOnly(nh, Set(Block(Pos(1,2),Pos(1,3)))).toList)
-	    println("pathsFromStart: " + pathsFromStart.toList)
+	    println((nh map (bh => bh._1)).toSet)	    
+	    println("pathsFromStart: " + (pathsFromStart.toList map ("\n\t" + _._1)))
+	    //println("pathsFromStart: " + pathsFromStart.toList)
 	    println("pathsToGoal: " + pathsToGoal.toList)
 	  }
   }

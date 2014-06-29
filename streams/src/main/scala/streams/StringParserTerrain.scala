@@ -81,8 +81,8 @@ trait StringParserTerrain extends GameDef {
     (for (v <- (0 until levelVector.length) if levelVector(v) contains c)
       yield Pos(v, levelVector(v).indexWhere(_ == c))).head
 
-  private lazy val vector: Vector[Vector[Char]] =
-    Vector(level.split("\n").map(str => Vector(str: _*)): _*)
+  /*hack private*/ lazy val vector: Vector[Vector[Char]] =
+    Vector(level.split(System.getProperty("line.separator")).map(str => Vector(str: _*)): _*)
 
   lazy val terrain: Terrain = terrainFunction(vector)
   lazy val startPos: Pos = findChar('S', vector)
