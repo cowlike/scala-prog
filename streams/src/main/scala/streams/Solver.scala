@@ -63,22 +63,17 @@ trait Solver extends GameDef {
    * of different paths - the implementation should naturally
    * construct the correctly sorted stream.
    */
-  def from(initial: Stream[(Block, List[Move])], explored: Set[Block]): Stream[(Block, List[Move])] =
-    initial match {
-      case Stream.Empty => initial
-      case x #:: xs => {
-        //println("find new neighbors for " + x._1 + " explored = " + (explored contains x._1)) /*hack*/
-        if (done(x._1)) { println("goal reached"); initial }
-        else {
-          val neighbors = neighborsWithHistory(x._1, x._2)
-          val newlyExplored = (neighbors map (bh => bh._1)).toSet
-          val newNeighbors = newNeighborsOnly(neighbors, explored)
-
-          val nextSet = for (n <- newNeighbors) yield n
-          from(nextSet, newlyExplored ++ explored) #::: initial
-        }
+  def from(initial: Stream[(Block, List[Move])], explored: Set[Block]): Stream[(Block, List[Move])] = {
+    val nh = neighborsWithHistory(initial.head._1, initial.head._2)
+    nh match {
+      case Stream.Empty => Stream.empty
+      case _ => {
+        val neighbors = newNeighborsOnly(nh, explored)
+        if (neighbors.isEmpty) initial
+        else neighbors flatMap (bh => from((bh._1, bh._2) #:: initial, explored + bh._1))
       }
     }
+  }
 
   /**
    * The stream of all paths that begin at the starting block.
@@ -92,7 +87,7 @@ trait Solver extends GameDef {
    * with the history how it was reached.
    */
   lazy val pathsToGoal: Stream[(Block, List[Move])] =
-    pathsFromStart.foldRight(Stream.empty: Stream[(Block, List[Move])])((bh, t) => if (done(bh._1)) bh #:: t else t)
+    pathsFromStart.filter(bh => done(bh._1))
 
   /**
    * The (or one of the) shortest sequence(s) of moves to reach the

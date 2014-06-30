@@ -30,7 +30,6 @@ object Bloxorz extends App {
         |------""".stripMargin
   }
 
-  println(Level0.pathsFromStart.toSet)
   println(Level0.solution)
 
   /**
@@ -46,6 +45,5 @@ object Bloxorz extends App {
         |------ooo-""".stripMargin
   }
 
-  println(Level1.pathsFromStart.toSet)
   println(Level1.solution)
 }
